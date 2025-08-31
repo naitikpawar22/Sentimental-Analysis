@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pink Quiz Game - Moderate</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quiz-container {
+      background: #fff;
+      width: 450px;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0px 10px 25px rgba(255, 105, 180, 0.3);
+    }
+
+    h2 {
+      font-size: 22px;
+      color: #d63384;
+      margin-bottom: 20px;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #ffb6c1;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .options button:hover {
+      background: #ff69b4;
+      transform: scale(1.05);
+    }
+
+    .options button.selected {
+      background: #d63384;
+    }
+
+    .emoji {
+      font-size: 30px;
+      margin: 15px 0;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .nav-buttons button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #ff69b4;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .nav-buttons button:hover {
+      background: #d63384;
+      transform: scale(1.05);
+    }
+
+    .result {
+      font-size: 20px;
+      font-weight: bold;
+      color: #d63384;
+      margin: 20px 0;
+    }
+
+    .submit-container {
+      text-align: center;
+    }
+
+    .submit-container button {
+      margin-top: 20px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #ff69b4;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-container button:hover {
+      background: #d63384;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2 id="question">Loading...</h2>
+    <div class="options" id="options"></div>
+    <div class="emoji" id="emoji">🤔</div>
+
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+
+    <div id="confirmation" class="submit-container" style="display:none;">
+      <p class="result">🎉 Ready to submit?</p>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+
+    <div id="scoreSection" style="display:none;">
+      <p class="result" id="score"></p>
+      <button onclick="resetQuiz()">🔄 Reset Game</button>
+    </div>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" src="music2.mp3" autoplay loop></audio>
+
+  <script>
+    const quizData = [
+      { q: "Your teacher praises your project in front of the class. What feeling is this?", a: "positive" },
+      { q: "You waited an hour for a bus but it never arrived. How do you feel?", a: "negative" },
+      { q: "You try a new dish at a restaurant. It's neither good nor bad. What feeling?", a: "neutral" },
+      { q: "You win a small prize in a competition. What kind of feeling is this?", a: "positive" },
+      { q: "You practiced for a play but forgot your lines on stage. What feeling?", a: "negative" }
+    ];
+
+    const options = ["Positive", "Negative", "Neutral"];
+    const emojis = { Positive: "😊", Negative: "😞", Neutral: "😐" };
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answers = {};
+
+    function loadQuestion() {
+      if (currentQuestion < quizData.length) {
+        document.getElementById("question").innerText = quizData[currentQuestion].q;
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+
+        options.forEach(option => {
+          const btn = document.createElement("button");
+          btn.innerText = option;
+          if (answers[currentQuestion] === option.toLowerCase()) {
+            btn.classList.add("selected");
+          }
+          btn.onclick = () => selectOption(option.toLowerCase(), btn);
+          optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById("emoji").innerText = "🤔";
+        document.getElementById("confirmation").style.display = "none";
+      } else {
+        document.getElementById("options").innerHTML = "";
+        document.getElementById("emoji").innerText = "🎯";
+        document.getElementById("confirmation").style.display = "block";
+      }
+    }
+
+    function selectOption(option, btn) {
+      answers[currentQuestion] = option;
+      document.querySelectorAll(".options button").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+
+      if (option === "positive") document.getElementById("emoji").innerText = "😊";
+      if (option === "negative") document.getElementById("emoji").innerText = "😞";
+      if (option === "neutral") document.getElementById("emoji").innerText = "😐";
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < quizData.length) {
+        currentQuestion++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+      }
+    }
+
+    function submitQuiz() {
+      score = 0;
+      quizData.forEach((q, index) => {
+        if (answers[index] === q.a) score += 2;
+      });
+
+      document.getElementById("confirmation").style.display = "none";
+      document.getElementById("scoreSection").style.display = "block";
+      document.getElementById("score").innerText = `⭐ Your Score: ${score} / ${quizData.length * 2}`;
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answers = {};
+      document.getElementById("scoreSection").style.display = "none";
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

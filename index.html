@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoChat: Sentiment Analysis for Kids</title>
+    <!-- ADDED: Favicon link -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/16923/16923368.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ADDED: Styles for the Iframe Container --- */
+        #iframe-container {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            display: none; /* Hide by default */
+        }
+
+        #iframe-container.active {
+            display: block; /* Show when its link is clicked */
+        }
+
+        #contentFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="toggle-btn" id="toggleBtn">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        
+        <div class="logo">
+            <h1><i class="fas fa-smile"></i> EmoChat</h1>
+            <p>Sentiment Analysis for Kids</p>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#" data-section="chat"><i class="fas fa-comments"></i> <span>Chat Analysis</span></a></li>
+            <li><a href="#" class="active" data-section="learn"><i class="fas fa-graduation-cap"></i> <span>Learn Sentiment</span></a></li>
+            
+            <!-- MODIFIED: Links now use data-page to load content into the iframe -->
+            <li><a href="#" data-page="exercise1.html"><i class="fas fa-puzzle-piece"></i> <span>Exercise 1: Basics</span></a></li>
+            <li><a href="#" data-page="exercise2.html"><i class="fas fa-brain"></i> <span>Exercise 2: Advanced</span></a></li>
+            <li><a href="#" data-page="exercise3.html"><i class="fas fa-star"></i> <span>Exercise 3: Master</span></a></li>
+            
+            <!-- REMOVED: The "About" link was here -->
+        </ul>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+        <div class="top-bar">
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <h2>Sentiment Analysis Learning Platform</h2>
+            <div class="user-actions">
+                <button id="resetChat"><i class="fas fa-sync"></i> Reset Chat</button>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <section id="chat" class="section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-robot"></i> EmoChat Analyzer</h2>
+                        <p>Type a message and I'll analyze its sentiment</p>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <div class="message-content">
+                                Hi there! I'm EmoChat. I can analyze the sentiment of your messages. 
+                                Try sending me something like "I love ice cream!" or "This is terrible."
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Type your message here...">
+                        <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="learn" class="section active">
+                <div class="exercise-container">
+                    <h2><i class="fas fa-graduation-cap"></i> What is Sentiment Analysis?</h2>
+                    <p class="intro-text">It's like teaching a computer to understand feelings in words! 🤔 Computers are smart, but they don't have feelings like we do. So, how do they know if "I love this game!" is a happy message?</p>
+                    
+                    <div class="story-box">
+                        <h3>📖 A Story: Alex and the Emo-Robot</h3>
+                        <p>Imagine a boy named Alex who builds a robot friend, Sparky 🤖. Sparky can read messages, but can't tell if Alex is happy or sad.</p>
+                        <p>One day, Alex texts: "We're going to the amusement park! It's going to be an **amazing** day! 🎉"</p>
+                        <p>Sparky just reads the words. To help, Alex gives Sparky two lists: a "Happy Words" list (amazing, fun, love, best) and a "Sad Words" list (terrible, boring, hate, worst).</p>
+                        <p>Now, when Sparky sees the word "amazing", it checks the list and thinks, "Aha! That's on the Happy Words list. Alex must be feeling **positive**!" That's exactly how sentiment analysis works!</p>
+                    </div>
+
+                    <h3>The Three Main Feelings (Sentiments)</h3>
+                    <p>We usually sort words and sentences into three main groups:</p>
+                    
+                    <div class="sentiment-cards-container">
+                        <div class="sentiment-card positive">
+                            <div class="card-icon">😄</div>
+                            <h3>Positive</h3>
+                            <p>These are happy, good, and joyful feelings. Words like **wonderful, awesome, like,** and **great** show positive sentiment.</p>
+                            <em>Example: "This pizza is delicious!"</em>
+                        </div>
+                        <div class="sentiment-card negative">
+                            <div class="card-icon">😠</div>
+                            <h3>Negative</h3>
+                            <p>These are sad, angry, or bad feelings. Words like **awful, boring, hate,** and **terrible** show negative sentiment.</p>
+                            <em>Example: "I'm so bored with this movie."</em>
+                        </div>
+                        <div class="sentiment-card neutral">
+                            <div class="card-icon">😐</div>
+                            <h3>Neutral</h3>
+                            <p>These are messages that don't show a strong feeling. They are usually facts or statements.</p>
+                            <em>Example: "The sky is blue."</em>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- MODIFIED: Replaced old exercise sections with an iframe container -->
+            <div id="iframe-container" class="section">
+                <iframe id="contentFrame" src="" frameborder="0" title="Exercise Content"></iframe>
+            </div>
+
+            <!-- REMOVED: The "About" section was here -->
+        </div>
+    </main>
+
+    <script src="words-list.js"></script>
+    
+    <!-- MODIFIED: Replaced external script.js with embedded script containing new logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ===================================
+            // DOM Elements
+            // ===================================
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleBtn');
+            const menuToggle = document.getElementById('menuToggle');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            const sections = document.querySelectorAll('.section');
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendMessageBtn = document.getElementById('sendMessage');
+            const resetChatBtn = document.getElementById('resetChat');
+            
+            // --- NEW: Iframe elements ---
+            const contentFrame = document.getElementById('contentFrame');
+            const iframeContainer = document.getElementById('iframe-container');
+
+            // ===================================
+            // Sidebar Logic
+            // ===================================
+
+            // Toggle sidebar for desktop
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            });
+
+            // Toggle sidebar for mobile
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // --- NEW: Smart navigation for sidebar links ---
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    const sectionId = link.dataset.section;
+                    const pageUrl = link.dataset.page;
+
+                    // Deactivate all links and hide all sections/iframe first
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    iframeContainer.classList.remove('active');
+
+                    // Activate the clicked link
+                    link.classList.add('active');
+
+                    if (sectionId) {
+                        // Handle ON-PAGE sections (like Learn or Chat)
+                        document.getElementById(sectionId).classList.add('active');
+                        contentFrame.src = "about:blank"; // Clear the iframe to prevent old content from showing
+                    } else if (pageUrl) {
+                        // Handle EXTERNAL pages (like exercises)
+                        iframeContainer.classList.add('active');
+                        contentFrame.src = pageUrl; // Load the page into the iframe
+                    }
+
+                    // Close mobile sidebar after selection
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // ===================================
+            // Chat Logic (Unchanged)
+            // ===================================
+            function analyzeSentiment(text) {
+                // This function requires the 'positiveWords' and 'negativeWords' arrays from words-list.js
+                let positiveCount = 0;
+                let negativeCount = 0;
+                const words = text.toLowerCase().split(/\s+/);
+
+                words.forEach(word => {
+                    word = word.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");
+                    if (typeof positiveWords !== 'undefined' && positiveWords.includes(word)) positiveCount++;
+                    if (typeof negativeWords !== 'undefined' && negativeWords.includes(word)) negativeCount++;
+                });
+                
+                const sentimentScore = positiveCount - negativeCount;
+                if (sentimentScore > 0) return { sentiment: "Positive", emoji: "😊" };
+                if (sentimentScore < 0) return { sentiment: "Negative", emoji: "😞" };
+                return { sentiment: "Neutral", emoji: "😐" };
+            }
+
+            function addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.innerHTML = text.replace(/\n/g, '<br>');
+                messageDiv.appendChild(messageContent);
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            sendMessageBtn.addEventListener('click', () => {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    const analysis = analyzeSentiment(message);
+                    setTimeout(() => {
+                        addMessage(`I detect ${analysis.sentiment.toLowerCase()} sentiment! ${analysis.emoji}`);
+                    }, 500);
+                    messageInput.value = '';
+                }
+            });
+
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessageBtn.click();
+            });
+
+            resetChatBtn.addEventListener('click', () => {
+                chatMessages.innerHTML = '';
+                addMessage("Hi there! I'm EmoChat. I can analyze the sentiment of your messages.");
+            });
+        });
+    </script>
+</body>
+</html>
+

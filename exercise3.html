@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentiment Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff9ac7, #ffc1e3, #ffe4f0);
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 80px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      font-size: 2.2em;
+      color: #e91e63;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #f8bbd0;
+      color: #333;
+      transition: all 0.3s;
+    }
+
+    .options button:hover {
+      background: #e91e63;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .navigation {
+      margin-top: 20px;
+    }
+
+    .navigation button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #f48fb1;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .navigation button:hover {
+      background: #e91e63;
+      transform: scale(1.1);
+    }
+
+    .result {
+      font-size: 1.8em;
+      margin: 20px 0;
+      color: #e91e63;
+    }
+
+    .reset-btn {
+      padding: 12px 24px;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      background: #f06292;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .reset-btn:hover {
+      background: #c2185b;
+      transform: scale(1.1);
+    }
+
+    .emoji {
+      font-size: 2em;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <audio id="bg-music" src="music3.mp3" autoplay loop></audio>
+  
+  <div class="container">
+    <h1>Sentiment Quiz Game 🎮</h1>
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="navigation">
+        <button onclick="prevQuestion()">⬅ Previous</button>
+        <button onclick="nextQuestion()">Next ➡</button>
+      </div>
+    </div>
+    <div id="result-section" style="display:none;">
+      <div class="result" id="result"></div>
+      <button class="reset-btn" onclick="resetQuiz()">🔄 Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "I love India ❤️", correct: "Positive" },
+      { question: "I hate corruption 😡", correct: "Negative" },
+      { question: "The weather is fine today ☁️", correct: "Neutral" },
+      { question: "My team lost the match 😢", correct: "Negative" },
+      { question: "I feel proud of my country 🇮🇳", correct: "Positive" }
+    ];
+
+    const optionsList = ["Positive 😊", "Negative 😡", "Neutral 😐"];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answers = {};
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+    const quizEl = document.getElementById("quiz");
+    const resultSection = document.getElementById("result-section");
+
+    function loadQuestion() {
+      questionEl.textContent = quizData[currentQuestion].question;
+      optionsEl.innerHTML = "";
+      optionsList.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(option);
+        if (answers[currentQuestion] === option) {
+          btn.style.background = "#e91e63";
+          btn.style.color = "white";
+        }
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(answer) {
+      answers[currentQuestion] = answer;
+      loadQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+      } else {
+        showConfirmation();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+      }
+    }
+
+    function showConfirmation() {
+      quizEl.innerHTML = `
+        <h2>🎉 You have completed all questions!</h2>
+        <p>Are you ready to submit?</p>
+        <button class="reset-btn" onclick="calculateScore()">✅ Submit</button>
+      `;
+    }
+
+    function calculateScore() {
+      score = 0;
+      quizData.forEach((q, index) => {
+        if (answers[index] && answers[index].startsWith(q.correct)) {
+          score += 2;
+        }
+      });
+      quizEl.style.display = "none";
+      resultSection.style.display = "block";
+      resultEl.textContent = "Your Score: " + score + " / " + (quizData.length * 2);
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answers = {};
+      quizEl.style.display = "block";
+      resultSection.style.display = "none";
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
